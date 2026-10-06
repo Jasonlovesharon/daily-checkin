@@ -231,7 +231,13 @@ const PLAN = [
 
 const ALL_ITEMS = PLAN.flatMap(s => s.groups.flatMap(g => g.items));
 const CIRC = 2 * Math.PI * 52;
-function appItems(d){ d = d || new Date(); return ALL_ITEMS.filter(i => !i.days || i.days.includes(d.getDay())); }
+/* 训练项从此日起生效：此前的历史打卡仍按原来的 15 项计算，已拿到的全勤不会被追回 */
+const TRAIN_SINCE = '2026-10-06';
+function appItems(d){
+  d = d || new Date();
+  const k = dateKey(d);
+  return ALL_ITEMS.filter(i => !i.days || (i.days.includes(d.getDay()) && k >= TRAIN_SINCE));
+}
 function totalOn(d){ return appItems(d).length; }
 const WD = ['周日','周一','周二','周三','周四','周五','周六'];
 
